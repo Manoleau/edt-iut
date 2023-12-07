@@ -1,5 +1,5 @@
 # edt-iut
-![logo](https://www.aht.li/3815094/logo_EDTIUT64.png)
+![logo](https://www.aht.li/3815097/logo_EDTIUT_1.png)
 
 # Commandes
 - edt:
@@ -7,7 +7,7 @@
         1. classe (nom de la classe).
     * Renvoie l'emploi du temps de la classe selectionné de la semaine actuelle.
   
-![edt](https://www.aht.li/3815095/commandeedt_1.png)
+![edt](https://www.aht.li/3815096/commandeedt_2.png)
 
 - salle libre:
   * paramètres:
