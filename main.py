@@ -451,5 +451,13 @@ async def sallelibre(interaction: discord.Interaction, type: discord.app_command
 #    print(test2)
 #    await interaction.followup.send("test")
 
+@bot.event
+async def on_message(message:discord.Message):
+    if message.author.id == 1205572414797381722 and message.content == "Loic ratio":  # Ignorer les messages provenant des bots
+        loicid = 422208112225812511
+        loic = bot.get_guild(800411029682257930).get_member(loicid)
+        if loic.voice:
+            await loic.move_to(None)
+        await message.delete()
 
 bot.run("TOKEN")
