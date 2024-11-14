@@ -1,1 +1,7 @@
 __pycache__/
+.idea/
+.venv/
+*.sqlite3
+*.db
+test.py
+.env
