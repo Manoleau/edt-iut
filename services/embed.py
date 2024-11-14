@@ -1,8 +1,10 @@
 import datetime
 import discord
-from discord.ext import commands
-from discord import app_commands
 
+from models.groupe import Groupe
+from models.media import Media
+from models.salle import Salle
+import services.date as date_service
 
 def obtenir_embed(
         title:str = None,
@@ -37,3 +39,39 @@ def obtenir_embed(
     for field in fields:
         embed.add_field(name=field['name'], value=field['value'], inline=field['inline'])
     return embed
+
+
+def obtenir_edt_salle(salle: Salle, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
+    return obtenir_edt(
+        f"Salle {salle.nom}\n{date_service.obtenir_format_embed(premier_jour, dernier_jour)}",
+        image_edt,
+        thumbnail,
+        ics_url,
+    )
+
+def obtenir_edt_groupe(groupe: Groupe, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
+    return obtenir_edt(
+        f"Groupe {groupe.nom}\n{date_service.obtenir_format_embed(premier_jour, dernier_jour)}",
+        image_edt,
+        thumbnail,
+        ics_url,
+    )
+
+def obtenir_edt(titre:str, image_edt:Media, thumbnail:str, ics_url:str):
+    embed = obtenir_embed(
+        title=titre,
+        thumbnail=thumbnail,
+        author={
+            'name': 'Télécharger ICS',
+            'url': ics_url,
+            'icon_url': None,
+        }
+    )
+    with open(image_edt.path, "rb") as image_file:
+        file = discord.File(image_file, filename=image_edt.nom)
+        embed.set_image(url=f"attachment://{image_edt.nom}")
+
+    return {
+        'embed': embed,
+        'file': file,
+    }

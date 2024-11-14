@@ -1,5 +1,12 @@
 FROM python:3.13
 
+RUN apt-get update && \
+    apt-get install -y \
+    wkhtmltopdf \
+    xvfb \
+    libfontconfig1 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./

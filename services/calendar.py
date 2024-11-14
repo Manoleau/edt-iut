@@ -3,7 +3,7 @@ from ics import Calendar, Event
 import requests
 base_url = f"https://adelb.univ-lyon1.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=:resources-id:&projectId=0&calType=ical&firstDate=:first-date:&lastDate=:last-date:"
 
-def obtenir(resources_id:str, first_date:datetime.datetime, last_date:datetime.datetime) -> list[Event]:
+def obtenir(resources_id:str, first_date:datetime.date, last_date:datetime.date):
     url = (base_url
            .replace(":resources-id:", resources_id)
            .replace(":first-date:", f"{first_date:%Y-%m-%d}")
@@ -14,7 +14,13 @@ def obtenir(resources_id:str, first_date:datetime.datetime, last_date:datetime.d
             cal = Calendar(req.text)
             events = cal.events
             sorted_events = sorted(events, reverse=False)
-            return sorted_events
+            return {
+                'events' : sorted_events,
+                'ics' : url,
+            }
     except Exception as e:
         print(e)
-    return []
+    return {
+        'events' : [],
+        'ics' : None,
+    }

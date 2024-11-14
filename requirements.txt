@@ -4,3 +4,5 @@ requests
 datetime
 python-dotenv
 audioop-lts
+Jinja2
+imgkit
