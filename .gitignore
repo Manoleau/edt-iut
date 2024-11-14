@@ -4,4 +4,5 @@ __pycache__/
 *.sqlite3
 *.db
 test*.py
+media/
 .env

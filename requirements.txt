@@ -2,5 +2,5 @@ discord.py
 ics
 requests
 datetime
-git+https://github.com/Rapptz/discord.py
 python-dotenv
+audioop-lts

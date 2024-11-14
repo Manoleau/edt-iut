@@ -6,18 +6,14 @@ import requests
 import datetime
 from Button.SemaineSuivPre import BtnSemaineSuivante
 from MenuSelect.ChoixJourSalleLibre import JourView
-from dotenv import load_dotenv
-import os
 import commandes.salle as salle
-load_dotenv()
-
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 class EdtIUTBot(commands.Bot):
     def __init__(self)-> None:
         super().__init__(command_prefix="!", intents=discord.Intents.all())
         self.commandes = None
     async def setup_hook(self) -> None:
+        print('test')
         try:
             salle.get(self)
             self.commandes = await self.tree.sync()
@@ -277,7 +273,7 @@ class EdtIUTBot(commands.Bot):
 #         await interaction.followup.send(embed=embed,
 #                                         view=BtnSemaineSuivante(jour, data_groupe[classeAll], classeAll, heureDecalage,
 #                                                                 bot.user.display_avatar.url))
-#
+
 #
 # @bot.tree.command(name="edt-salle", description="Affiche un emploi du temps d'une salle choisie")
 # @app_commands.describe(salle="Quelle salle ?")

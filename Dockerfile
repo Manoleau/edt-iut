@@ -8,4 +8,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "main.py"]
+RUN echo '#!/bin/bash' > /usr/local/bin/script.sh && \
+    echo 'python setup.py' >> /usr/local/bin/script.sh && \
+    echo 'python main.py' >> /usr/local/bin/script.sh && \
+    chmod +x /usr/local/bin/script.sh
+
+# Exécuter le script lors du démarrage du conteneur
+CMD ["/usr/local/bin/script.sh"]
