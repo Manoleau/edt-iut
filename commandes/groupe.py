@@ -63,8 +63,9 @@ def get(bot):
             data = {
                 'jours' : [Jour(i) for i in range(len(jours))],
                 'heures' : horaires_tries,
+                'vide': len(horaires_tries) == 0
             }
-            nom_fichier = f'{groupe.nom.lower()}_{premier_jour.strftime('%Y-%m-%d')}_{dernier_jour.strftime('%Y-%m-%d')}'
+            nom_fichier = f'{groupe.nom.lower()}_{premier_jour.strftime('%Y-%m-%d')}_{dernier_jour.strftime('%Y-%m-%d')}'.replace(" ","")
             media_service.create_html_edt(nom_fichier, data)
             image = media_service.create_image_edt(nom_fichier)
             res = embed_service.obtenir_edt_groupe(groupe, premier_jour, dernier_jour, image, bot.user.display_avatar.url, cal['ics'])

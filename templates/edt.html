@@ -1,7 +1,4 @@
 <style>
-    * {
-        background-color: black;
-    }
     body {
         margin: 0;
         padding: 0;
@@ -71,23 +68,27 @@
     }
 
 </style>
-<table class="schedule">
-    <thead>
-        <tr>
-            <th class="time">Heure</th>
-            {% for jour in jours %}
-                <th>{{ jour.name|lower }}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for heure in heures %}
+{% if vide %}
+    <h1 style="color: white">Pas de cours</h1>
+{% else %}
+    <table class="schedule">
+        <thead>
             <tr>
-                <td class="time">{{ heure.time }}</td>
-                {% for i, cour in enumerate(heure.cours) %}
-                    <td class="course course-{{ i % 5 + 1 }}">{{ cour }}</td>
+                <th class="time">Heure</th>
+                {% for jour in jours %}
+                    <th>{{ jour.name|lower }}</th>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for heure in heures %}
+                <tr>
+                    <td class="time">{{ heure.time }}</td>
+                    {% for i, cour in enumerate(heure.cours) %}
+                        <td class="course course-{{ i % 5 + 1 }}">{{ cour }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
