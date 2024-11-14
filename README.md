@@ -1,6 +1,27 @@
 # edt-iut
 ![logo](https://www.aht.li/3815097/logo_EDTIUT_1.png)
 
+# Installation
+### Prérequis
+- Docker
+- Git
+### Clonage
+```
+git clone https://github.com/Manoleau/edt-iut.git
+```
+### Env
+- Créez un fichier .env à la racine du projet
+- Ajoutez les lignes suivantes dans le fichier
+- Changez le token par votre token de bot
+```
+TOKEN_DISCORD_BOT=ChangerToken
+DB_NAME=data_base
+```
+### Docker
+```
+docker-compose up
+```
+
 # Commandes
 - edt
     * paramètre
