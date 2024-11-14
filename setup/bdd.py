@@ -47,7 +47,17 @@ def remplir_tables():
         ('130', 'S15', TypeSalle.TD.name),
         ('131', 'S25', TypeSalle.TD.name)
     ]
+    data_groupe = [
+        ('6161', 'BUT3 RA1A'),
+        ('6163', 'BUT3 RA1B'),
+        ('6165', 'BUT3 RA2A'),
+        ('6168', 'BUT3 RA2B'),
+        ('14059', 'BUT3 RA3'),
+        ('6048', 'BUT3 AGED'),
+        ('6136', 'BUT3 DACS'),
+    ]
     bdd._insert_many('salle', ['id', 'nom', 'type'], data_salle)
+    bdd._insert_many('groupe', ['id', 'nom'], data_groupe)
     bdd.disconnect()
     fin = time.time()
     print(f"Durée remplissage tables : {fin-debut:.2f}s")

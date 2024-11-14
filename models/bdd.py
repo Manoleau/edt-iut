@@ -2,6 +2,8 @@ import os
 import sqlite3
 from dotenv import load_dotenv
 from models.groupe import Groupe
+from models.salle import Salle
+from models.type_salle import TypeSalle
 
 load_dotenv()
 
@@ -93,7 +95,7 @@ class BDD:
 
     def obtenir_groupe_avec_nom(self, nom:str) -> Groupe | None:
         self.connect()
-        res = self._fetch_one("SELECT * FROM groupe WHERE nom = ?", (nom,))
+        res = self._fetch_one("SELECT * FROM groupe WHERE nom = ?;", (nom,))
         self.disconnect()
         if res:
             return Groupe(
@@ -112,3 +114,39 @@ class BDD:
                 res[1]
             )
         return None
+
+    def obtenir_salle_avec_nom(self, nom: str) -> Salle | None:
+        self.connect()
+        res = self._fetch_one("SELECT * FROM salle WHERE nom = ?", (nom,))
+        self.disconnect()
+        if res:
+            return Salle(
+                res[0],
+                res[1],
+                TypeSalle[res[2].upper()]
+            )
+        return None
+
+    def obtenir_salle_avec_id(self, id: str) -> Salle | None:
+        self.connect()
+        res = self._fetch_one("SELECT * FROM salle WHERE id = ?", (id,))
+        self.disconnect()
+        if res:
+            return Salle(
+                res[0],
+                res[1],
+                TypeSalle[res[2].upper()]
+            )
+        return None
+
+    def obtenir_toutes_salles(self, order_by:str = "nom") -> list[Salle]:
+        self.connect()
+        res = self._fetch_all(f"SELECT * FROM salle ORDER BY {order_by};")
+        self.disconnect()
+        return [Salle(salle[0], salle[1], TypeSalle[salle[2].upper()]) for salle in res]
+
+    def obtenir_tous_groupes(self, order_by:str = "nom") -> list[Groupe]:
+        self.connect()
+        res = self._fetch_all(f"SELECT * FROM groupe ORDER BY {order_by};")
+        self.disconnect()
+        return [Groupe(groupe[0], groupe[1]) for groupe in res]
