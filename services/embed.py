@@ -49,23 +49,16 @@ def obtenir_edt_salle(salle: Salle, premier_jour:datetime.date, dernier_jour:dat
         ics_url,
     )
 
-def obtenir_edt_groupe(groupe: Groupe, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
-    return obtenir_edt(
-        f"Groupe {groupe.nom}\n{date_service.obtenir_format_embed(premier_jour, dernier_jour)}",
-        image_edt,
-        thumbnail,
-        ics_url,
-    )
-
-def obtenir_edt(titre:str, image_edt:Media, thumbnail:str, ics_url:str):
+def obtenir_edt(entity:Salle | Groupe, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
     embed = obtenir_embed(
-        title=titre,
+        title=f"{entity.__class__.__name__} {entity.nom}\n{date_service.obtenir_format_embed(premier_jour, dernier_jour)}",
         thumbnail=thumbnail,
         author={
             'name': 'Télécharger ICS',
             'url': ics_url,
             'icon_url': None,
-        }
+        },
+        timestamp = datetime.datetime.now(),
     )
     with open(image_edt.path, "rb") as image_file:
         file = discord.File(image_file, filename=image_edt.nom)
@@ -75,3 +68,12 @@ def obtenir_edt(titre:str, image_edt:Media, thumbnail:str, ics_url:str):
         'embed': embed,
         'file': file,
     }
+
+def obtenir_erreur(message:str, thumbnail:str):
+    return obtenir_embed(
+        title="Erreur",
+        description=message,
+        thumbnail=thumbnail,
+        color=discord.Color.red(),
+        timestamp=datetime.datetime.now(),
+    )
