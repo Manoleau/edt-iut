@@ -18,9 +18,17 @@ def obtenir(resources_id:str, first_date:datetime.date, last_date:datetime.date)
                 'events' : sorted_events,
                 'ics' : url,
             }
+        else:
+            res = {
+                'events': [],
+                'ics': None,
+                'erreur': f"Erreur {req.status_code} - Impossible de récupérer les données depuis le serveur.\nVeuillez réessayer plus tard.",
+            }
     except Exception as e:
         print(e)
-    return {
-        'events' : [],
-        'ics' : None,
-    }
+        res = {
+            'events' : [],
+            'ics' : None,
+            'erreur': e
+        }
+    return res

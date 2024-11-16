@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import commandes.salle as salle
 import commandes.groupe as groupe
-
+import logging
+logger = logging.getLogger(__name__)
 class EdtIUTBot(commands.Bot):
     def __init__(self)-> None:
         super().__init__(command_prefix="!", intents=discord.Intents.all())

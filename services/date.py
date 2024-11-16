@@ -25,15 +25,5 @@ def obtenir_heure_decalage(zone:str = "Europe/Paris"):
     local_time = datetime.datetime.now(local_timezone)
     return int(local_time.utcoffset().total_seconds() / 3600)
 
-
-def obtenir_indice_horaire(horaires:list[dict], horaire:str):
-    res = -1
-    i = 0
-    while res == -1 and i < len(horaires):
-        if horaires[i]['time'] == horaire:
-            res = i
-        i += 1
-    return res
-
-def obtenir_format_embed(premier_jour:datetime.date, dernier_jour:datetime.date):
+def obtenir_format_title_embed(premier_jour:datetime.date, dernier_jour:datetime.date):
     return f"{Jour(premier_jour.weekday()).name.capitalize()} {premier_jour.day} {Mois(premier_jour.month).name.capitalize()} {premier_jour.year}\n{Jour(dernier_jour.weekday()).name.capitalize()} {dernier_jour.day} {Mois(dernier_jour.month).name.capitalize()} {dernier_jour.year}"

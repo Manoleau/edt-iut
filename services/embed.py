@@ -43,7 +43,7 @@ def obtenir_embed(
 
 def obtenir_edt_salle(salle: Salle, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
     return obtenir_edt(
-        f"Salle {salle.nom}\n{date_service.obtenir_format_embed(premier_jour, dernier_jour)}",
+        f"Salle {salle.nom}\n{date_service.obtenir_format_title_embed(premier_jour, dernier_jour)}",
         image_edt,
         thumbnail,
         ics_url,
@@ -51,7 +51,7 @@ def obtenir_edt_salle(salle: Salle, premier_jour:datetime.date, dernier_jour:dat
 
 def obtenir_edt(entity:Salle | Groupe, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
     embed = obtenir_embed(
-        title=f"{entity.__class__.__name__} {entity.nom}\n{date_service.obtenir_format_embed(premier_jour, dernier_jour)}",
+        title=f"{entity.__class__.__name__} {entity.nom}\n{date_service.obtenir_format_title_embed(premier_jour, dernier_jour)}",
         thumbnail=thumbnail,
         author={
             'name': 'Télécharger ICS',

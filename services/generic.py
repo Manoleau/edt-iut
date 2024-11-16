@@ -7,7 +7,9 @@ from models.groupe import Groupe
 from models.jour import Jour
 from models.bdd import BDD
 from models.salle import Salle
+from models.logger import Logger
 
+logger = Logger('generic_service')
 
 def nouveau_commande_edt_salle(bot, salle_id:str):
     bdd = BDD()
@@ -23,7 +25,7 @@ def nouveau_commande_edt_groupe(bot, groupe_id:str):
 def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
     if entity:
         setup = obtenir_setup(entity, with_groupe)
-        if setup:
+        if setup['erreur'] is None:
             jours = setup['jours']
             premier_jour = setup['premier_jour']
             dernier_jour = setup['dernier_jour']
@@ -41,18 +43,16 @@ def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
             res = embed_service.obtenir_edt(entity, premier_jour, dernier_jour, image, bot.user.display_avatar.url, cal['ics'])
         else:
             res = {
-                'embed': embed_service.obtenir_erreur(f"Pas de calendrier pour {entity.__class__.__name__.lower()} {entity.nom}", bot.user.display_avatar.url),
+                'embed': embed_service.obtenir_erreur(setup['erreur'], bot.user.display_avatar.url),
                 'file': None
             }
     else:
+        logger.ecrire_error('Aucun résultat')
         res = {
-            'embed': embed_service.obtenir_erreur("Aucun résultat", bot.user.display_avatar.url),
+            'embed': embed_service.obtenir_erreur(f"Aucun résultat", bot.user.display_avatar.url),
             'file': None
         }
     return res
-
-
-
 
 def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
     jours = date_service.obtenir_jour_semaine_actuel()
@@ -60,7 +60,10 @@ def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
     dernier_jour = jours[4]
     cal = calendar_service.obtenir(entity.id, premier_jour, dernier_jour)
     if cal['ics'] is None:
-        return None
+
+        return {
+            'erreur' : cal['erreur'],
+        }
     heure_decalage = date_service.obtenir_heure_decalage()
     horaires = []
     check_horaires = []
@@ -113,5 +116,6 @@ def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
         'premier_jour': premier_jour,
         'dernier_jour': dernier_jour,
         'horaires_tries': horaires_tries,
-        'cal' : cal
+        'cal' : cal,
+        'erreur': None
     }
