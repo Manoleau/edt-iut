@@ -5,14 +5,15 @@ from models.jour import Jour
 from models.mois import Mois
 
 
-def obtenir_jour_semaine_actuel() -> list[datetime.date]:
-    aujourdhui = datetime.date.today()
-    lundi = aujourdhui - datetime.timedelta(days=aujourdhui.weekday())
-    mardi = aujourdhui + datetime.timedelta(days=1 - aujourdhui.weekday() % 7)
-    mercredi = aujourdhui + datetime.timedelta(days=2 - aujourdhui.weekday() % 7)
-    jeudi = aujourdhui + datetime.timedelta(days=3 - aujourdhui.weekday() % 7)
-    vendredi = aujourdhui + datetime.timedelta(days=4 - aujourdhui.weekday() % 7)
-    if aujourdhui.weekday() == 5 or aujourdhui.weekday() == 6:
+def obtenir_jour_semaine_actuel(jour:datetime.date = None) -> list[datetime.date]:
+    if jour is None:
+        jour = datetime.date.today()
+    lundi = jour - datetime.timedelta(days=jour.weekday())
+    mardi = jour + datetime.timedelta(days=1 - jour.weekday() % 7)
+    mercredi = jour + datetime.timedelta(days=2 - jour.weekday() % 7)
+    jeudi = jour + datetime.timedelta(days=3 - jour.weekday() % 7)
+    vendredi = jour + datetime.timedelta(days=4 - jour.weekday() % 7)
+    if jour.weekday() == 5 or jour.weekday() == 6:
         lundi = lundi + datetime.timedelta(days=7)
         mardi = mardi + datetime.timedelta(days=7)
         mercredi = mercredi + datetime.timedelta(days=7)

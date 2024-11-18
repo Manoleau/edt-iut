@@ -1,4 +1,6 @@
 import datetime
+import os
+
 import services.embed as embed_service
 import services.date as date_service
 import services.calendar as calendar_service
@@ -11,20 +13,20 @@ from models.logger import Logger
 
 logger = Logger('generic_service')
 
-def nouveau_commande_edt_salle(bot, salle_id:str):
+def nouveau_commande_edt_salle(bot, salle_id:str, update:bool = True, jour_semaine:datetime.date = None):
     bdd = BDD()
     salle = bdd.obtenir_salle_avec_id(salle_id)
-    res = nouveau_commande_edt(bot, salle, with_groupe=True)
+    res = nouveau_commande_edt(bot, salle, update=update, with_groupe=True, jour_semaine=jour_semaine)
     return res
-def nouveau_commande_edt_groupe(bot, groupe_id:str):
+def nouveau_commande_edt_groupe(bot, groupe_id:str, update:bool = True, jour_semaine:datetime.date = None):
     bdd = BDD()
     groupe = bdd.obtenir_groupe_avec_id(groupe_id)
-    res = nouveau_commande_edt(bot,groupe, with_groupe=False)
+    res = nouveau_commande_edt(bot,groupe, update=update, with_groupe=False, jour_semaine=jour_semaine)
     return res
 
-def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
+def nouveau_commande_edt(bot, entity:Groupe | Salle | None, update:bool = True, with_groupe=False, jour_semaine:datetime.date = None):
     if entity:
-        setup = obtenir_setup(entity, with_groupe)
+        setup = obtenir_setup(entity, with_groupe, jour_semaine)
         if setup['erreur'] is None:
             premier_jour = setup['premier_jour']
             dernier_jour = setup['dernier_jour']
@@ -37,9 +39,12 @@ def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
 
             nom_fichier = f'{entity.nom.lower()}_{premier_jour.strftime('%Y-%m-%d')}_{dernier_jour.strftime('%Y-%m-%d')}'.replace(
                 " ", "")
-            media_service.create_html_edt(nom_fichier, data)
-            image = media_service.create_image_edt(nom_fichier)
-            res = embed_service.obtenir_edt(entity, premier_jour, dernier_jour, image, bot.user.display_avatar.url, cal['ics'])
+
+
+            media_service.create_html_edt(nom_fichier, data, update)
+            image = media_service.create_image_edt(nom_fichier, update)
+
+            res = embed_service.obtenir_edt(entity, premier_jour, dernier_jour, image, bot, cal['ics'])
         else:
             res = {
                 'embed': embed_service.obtenir_erreur(setup['erreur'], bot.user.display_avatar.url),
@@ -53,10 +58,10 @@ def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
         }
     return res
 
-def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
+def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False, jour_semaine:datetime.date = None):
 
     ## Il faut nom (deja fait), grid-column (Jour) et grid-row (Heure départ calcul + durée)
-    jours = date_service.obtenir_jour_semaine_actuel()
+    jours = date_service.obtenir_jour_semaine_actuel(jour_semaine)
     premier_jour = jours[0]
     dernier_jour = jours[4]
     cal = calendar_service.obtenir(entity.id, premier_jour, dernier_jour)

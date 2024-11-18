@@ -16,16 +16,20 @@ def creer_dossier(path_dossier:str):
         logger.ecrire_info(f"Dossier : ${path_dossier} crée avec succés")
 creer_dossier(base_path)
 
-def create_html_edt(nom_fichier:str, data:dict) -> str:
-    output_html = template_edt.render(data, enumerate=enumerate)
+def create_html_edt(nom_fichier:str, data:dict, update:bool = True):
     creer_dossier(f"{base_path}/html")
+    if not update and os.path.exists(f"{base_path}/html/{nom_fichier}.html"):
+        return
+    output_html = template_edt.render(data, enumerate=enumerate)
+
     with open(f"{base_path}/html/{nom_fichier}.html", "w", encoding="utf-8") as file:
         file.write(output_html)
         logger.ecrire_info(f"Fichier EDT HTML : {base_path}/html/{nom_fichier}.html créé avec succés")
-    return output_html
 
-def create_image_edt(nom_fichier:str) -> Media:
+def create_image_edt(nom_fichier:str, update:bool = True) -> Media:
     creer_dossier(f"{base_path}/images")
+    if not update and os.path.exists(f'{base_path}/images/{nom_fichier}.jpg'):
+        return Media(f'{nom_fichier}.jpg', f'{base_path}/images/{nom_fichier}.jpg')
     hti = Html2Image(output_path=f"{base_path}/images")
     hti.screenshot(
         html_file=f'{base_path}/html/{nom_fichier}.html',

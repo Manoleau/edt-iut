@@ -7,11 +7,11 @@ bdd = BDD()
 def get(bot):
     @bot.tree.command(name="edt-salle", description="Emploi du temps d'une salle")
     @app_commands.describe(salle="Quelle salle ?")
-    async def edt_salle(interaction: discord.Interaction, salle: str):
+    async def edt_salle(interaction: discord.Interaction, salle: str, update:bool = False):
         await interaction.response.defer()
-        res = generic_service.nouveau_commande_edt_salle(bot, salle)
+        res = generic_service.nouveau_commande_edt_salle(bot, salle, update=update)
         if res['file']:
-            await interaction.followup.send(embed=res['embed'], file=res['file'])
+            await interaction.followup.send(embed=res['embed'], file=res['file'], view=res['view'])
         else:
             await interaction.followup.send(embed=res['embed'])
 

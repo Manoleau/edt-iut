@@ -1,6 +1,7 @@
 import datetime
 import discord
 
+from Button.Edt import ButtonsEdt
 from models.groupe import Groupe
 from models.media import Media
 from models.salle import Salle
@@ -40,19 +41,10 @@ def obtenir_embed(
         embed.add_field(name=field['name'], value=field['value'], inline=field['inline'])
     return embed
 
-
-def obtenir_edt_salle(salle: Salle, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
-    return obtenir_edt(
-        f"Salle {salle.nom}\n{date_service.obtenir_format_title_embed(premier_jour, dernier_jour)}",
-        image_edt,
-        thumbnail,
-        ics_url,
-    )
-
-def obtenir_edt(entity:Salle | Groupe, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, thumbnail:str, ics_url:str):
+def obtenir_edt(entity:Salle | Groupe, premier_jour:datetime.date, dernier_jour:datetime.date, image_edt:Media, bot, ics_url:str):
     embed = obtenir_embed(
         title=f"{entity.__class__.__name__} {entity.nom}\n{date_service.obtenir_format_title_embed(premier_jour, dernier_jour)}",
-        thumbnail=thumbnail,
+        thumbnail=bot.user.display_avatar.url,
         author={
             'name': 'Télécharger ICS',
             'url': ics_url,
@@ -67,6 +59,7 @@ def obtenir_edt(entity:Salle | Groupe, premier_jour:datetime.date, dernier_jour:
     return {
         'embed': embed,
         'file': file,
+        'view' : ButtonsEdt(bot, premier_jour, entity, ics_url)
     }
 
 def obtenir_erreur(message:str, thumbnail:str):
