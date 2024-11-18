@@ -17,37 +17,31 @@ class ButtonsEdt(View):
     async def semainePreBtn(self, interaction: discord.Interaction, button: Button):
         self.jour = self.jour - datetime.timedelta(days=7)
         with_groupe = self.model.__class__.__name__ == 'Salle'
-        await interaction.message.delete()
-        message = await interaction.channel.send('Modification en cours...')
         res = generic_service.nouveau_commande_edt(self.bot, self.model, update=False, with_groupe=with_groupe, jour_semaine=self.jour)
         if res['file']:
             await interaction.channel.send(embed=res['embed'], file=res['file'], view=res['view'])
         else:
             await interaction.channel.send(embed=res['embed'])
-        await message.delete()
+        await interaction.message.delete()
 
 
     @discord.ui.button(label="Mettre à jour", style=discord.ButtonStyle.primary)
     async def update(self, interaction: discord.Interaction, button: Button):
         with_groupe = self.model.__class__.__name__ == 'Salle'
-        await interaction.message.delete()
-        message = await interaction.channel.send('Modification en cours...')
         res = generic_service.nouveau_commande_edt(self.bot, self.model, update=True, with_groupe=with_groupe, jour_semaine=self.jour)
         if res['file']:
             await interaction.channel.send(embed=res['embed'], file=res['file'], view=res['view'])
         else:
             await interaction.channel.send(embed=res['embed'])
-        await message.delete()
+        await interaction.message.delete()
 
     @discord.ui.button(label=">", style=discord.ButtonStyle.primary)
     async def semaineSuivBtn(self, interaction: discord.Interaction, button: Button):
         self.jour = self.jour + datetime.timedelta(days=7)
         with_groupe = self.model.__class__.__name__ == 'Salle'
-        await interaction.message.delete()
-        message = await interaction.channel.send('Modification en cours...')
         res = generic_service.nouveau_commande_edt(self.bot, self.model, update=False, with_groupe=with_groupe, jour_semaine=self.jour)
         if res['file']:
             await interaction.channel.send(embed=res['embed'], file=res['file'], view=res['view'])
         else:
             await interaction.channel.send(embed=res['embed'])
-        await message.delete()
+        await interaction.message.delete()
