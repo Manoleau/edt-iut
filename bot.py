@@ -9,7 +9,6 @@ class EdtIUTBot(commands.Bot):
         super().__init__(command_prefix="!", intents=discord.Intents.all())
         self.commandes = None
     async def setup_hook(self) -> None:
-        print('test')
         try:
             salle.get(self)
             groupe.get(self)

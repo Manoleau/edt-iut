@@ -4,6 +4,7 @@ __pycache__/
 *.sqlite3
 *.db
 test*.py
+node_modules/
 media/
 logs/
 .env

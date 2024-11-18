@@ -24,13 +24,13 @@ def create_html_edt(nom_fichier:str, data:dict) -> str:
     creer_dossier(f"{base_path}/html")
     with open(f"{base_path}/html/{nom_fichier}.html", "w", encoding="utf-8") as file:
         file.write(output_html)
-        logger.ecrire_info(f"Fichier EDT HTML : {base_path}/html/{nom_fichier}.html crée avec succés")
+        logger.ecrire_info(f"Fichier EDT HTML : {base_path}/html/{nom_fichier}.html créé avec succés")
     return output_html
 
 def create_image_edt(nom_fichier:str) -> Media:
     creer_dossier(f"{base_path}/images")
     imgkit.from_file(f'{base_path}/html/{nom_fichier}.html', f'{base_path}/images/{nom_fichier}.jpg', options=options_image)
-    logger.ecrire_info(f"Fichier EDT Image : {base_path}/images/{nom_fichier}.jpg crée avec succés")
+    logger.ecrire_info(f"Fichier EDT Image : {base_path}/images/{nom_fichier}.jpg créé avec succés")
     return Media(f'{nom_fichier}.jpg', f'{base_path}/images/{nom_fichier}.jpg')
 
 

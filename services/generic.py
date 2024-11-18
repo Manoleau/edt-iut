@@ -4,8 +4,8 @@ import services.date as date_service
 import services.calendar as calendar_service
 import services.media as media_service
 from models.groupe import Groupe
-from models.jour import Jour
 from models.bdd import BDD
+from models.jour import Jour
 from models.salle import Salle
 from models.logger import Logger
 
@@ -36,6 +36,7 @@ def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
                 'heures': horaires_tries,
                 'vide': len(horaires_tries) == 0
             }
+
             nom_fichier = f'{entity.nom.lower()}_{premier_jour.strftime('%Y-%m-%d')}_{dernier_jour.strftime('%Y-%m-%d')}'.replace(
                 " ", "")
             media_service.create_html_edt(nom_fichier, data)
@@ -96,16 +97,16 @@ def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
                     try:
                         int(groupe)
                         groupe = description[1]
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{groupe}')
+                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{groupe}<br>{event.location}')
                     except ValueError:
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{groupe}<br>{prof}')
+                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{groupe}<br>{prof}<br>{event.location}')
                 else:
                     try:
                         int(description[0])
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}')
+                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{event.location}')
                     except ValueError:
                         prof = description[1]
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{prof}')
+                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{prof}<br>{event.location}')
 
     for horaire in horaires_tries:
         while len(horaire['cours']) < 5:
