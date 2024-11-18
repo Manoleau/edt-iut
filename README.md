@@ -3,7 +3,7 @@
 
 # Installation
 ### Prérequis
-- Docker
+- Python
 - Git
 ### Clonage
 ```
@@ -17,9 +17,11 @@ git clone https://github.com/Manoleau/edt-iut.git
 TOKEN_DISCORD_BOT=ChangerToken
 DB_NAME=data_base
 ```
-### Docker
+### Lancer
 ```
-docker-compose up
+pip install -r requirements.txt
+python setup.py
+python main.py
 ```
 
 # Commandes

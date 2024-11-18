@@ -5,7 +5,7 @@ import services.calendar as calendar_service
 import services.media as media_service
 from models.groupe import Groupe
 from models.bdd import BDD
-from models.jour import Jour
+from models.couleurs import Couleurs
 from models.salle import Salle
 from models.logger import Logger
 
@@ -66,6 +66,11 @@ def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
         }
     heure_decalage = date_service.obtenir_heure_decalage()
     liste_cours = []
+    liste_cours_colors = {
+
+    }
+    liste_couleurs = list(Couleurs)
+    current_couleur_index = 0
     for event in cal['events']:
         event.begin += datetime.timedelta(hours=heure_decalage)
         event.end += datetime.timedelta(hours=heure_decalage)
@@ -87,9 +92,17 @@ def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
             except ValueError:
                 prof = description[1]
                 nom = f'{event.name}<br>{prof}<br>{event.location}'
+        cle_nom = normaliser_cle(event.name)
+        if cle_nom in liste_cours_colors:
+            couleur = liste_cours_colors[cle_nom]
+        else:
+            couleur = liste_couleurs[current_couleur_index]
+            liste_cours_colors[cle_nom] = couleur
+            current_couleur_index += 1
+
         liste_cours.append({
             'nom' : nom,
-            'style' : f"grid-column: {event.begin.date().weekday() + 2}; {_calcule_grid_row(debut_datetime.hour, debut_datetime.minute, event.duration.seconds // 60 // 60)}",
+            'style' : f"background-color: {couleur.value}; grid-column: {event.begin.date().weekday() + 2}; {_calcule_grid_row(debut_datetime.hour, debut_datetime.minute, event.duration.seconds // 60 // 60)}",
         })
     return {
         'premier_jour': premier_jour,
@@ -105,4 +118,10 @@ def _calcule_grid_row(heure_debut:int, minute_debut:int, duree:int):
         debut_grid += 1
     return f"grid-row: {debut_grid} / span {duree * 2};"
 
+import re
 
+def normaliser_cle(cle):
+    cle = cle.lower()
+    cle = cle.replace(" ", "_")
+    cle = re.sub(r"[^a-z0-9_]", "", cle)
+    return cle

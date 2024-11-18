@@ -9,7 +9,6 @@ def get(bot):
     @app_commands.describe(salle="Quelle salle ?")
     async def edt_salle(interaction: discord.Interaction, salle: str):
         await interaction.response.defer()
-        print(salle)
         res = generic_service.nouveau_commande_edt_salle(bot, salle)
         if res['file']:
             await interaction.followup.send(embed=res['embed'], file=res['file'])
