@@ -1,17 +1,14 @@
-from jinja2 import Environment, FileSystemLoader
-import imgkit
 import os
-from models.media import Media
+from jinja2 import Environment, FileSystemLoader
+
 from models.logger import Logger
+from models.media import Media
+from html2image import Html2Image
 
 base_path = 'media'
 env = Environment(loader=FileSystemLoader("."))
 template_edt = env.get_template("templates/edt.html")
 logger = Logger('media_service')
-options_image = {
-    'width': 1920,
-    'height': 1080,
-}
 
 def creer_dossier(path_dossier:str):
     if not os.path.exists(path_dossier):
@@ -29,7 +26,12 @@ def create_html_edt(nom_fichier:str, data:dict) -> str:
 
 def create_image_edt(nom_fichier:str) -> Media:
     creer_dossier(f"{base_path}/images")
-    imgkit.from_file(f'{base_path}/html/{nom_fichier}.html', f'{base_path}/images/{nom_fichier}.jpg', options=options_image)
+    hti = Html2Image(output_path=f"{base_path}/images")
+    hti.screenshot(
+        html_file=f'{base_path}/html/{nom_fichier}.html',
+        save_as=f'{nom_fichier}.jpg',
+        size=(1920, 1080)
+    )
     logger.ecrire_info(f"Fichier EDT Image : {base_path}/images/{nom_fichier}.jpg créé avec succés")
     return Media(f'{nom_fichier}.jpg', f'{base_path}/images/{nom_fichier}.jpg')
 

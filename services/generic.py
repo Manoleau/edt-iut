@@ -26,15 +26,13 @@ def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
     if entity:
         setup = obtenir_setup(entity, with_groupe)
         if setup['erreur'] is None:
-            jours = setup['jours']
             premier_jour = setup['premier_jour']
             dernier_jour = setup['dernier_jour']
-            horaires_tries = setup['horaires_tries']
+            cours = setup['cours']
             cal = setup['cal']
             data = {
-                'jours': [Jour(i) for i in range(len(jours))],
-                'heures': horaires_tries,
-                'vide': len(horaires_tries) == 0
+                'cours': cours,
+                'vide': len(cours) == 0
             }
 
             nom_fichier = f'{entity.nom.lower()}_{premier_jour.strftime('%Y-%m-%d')}_{dernier_jour.strftime('%Y-%m-%d')}'.replace(
@@ -56,67 +54,55 @@ def nouveau_commande_edt(bot, entity:Groupe | Salle | None, with_groupe=False):
     return res
 
 def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False):
+
+    ## Il faut nom (deja fait), grid-column (Jour) et grid-row (Heure départ calcul + durée)
     jours = date_service.obtenir_jour_semaine_actuel()
     premier_jour = jours[0]
     dernier_jour = jours[4]
     cal = calendar_service.obtenir(entity.id, premier_jour, dernier_jour)
     if cal['ics'] is None:
-
         return {
             'erreur' : cal['erreur'],
         }
     heure_decalage = date_service.obtenir_heure_decalage()
-    horaires = []
-    check_horaires = []
-    indices_horaires = {}
+    liste_cours = []
     for event in cal['events']:
         event.begin += datetime.timedelta(hours=heure_decalage)
         event.end += datetime.timedelta(hours=heure_decalage)
-        horaire = f"{event.begin.strftime('%H:%M')} - {event.end.strftime('%H:%M')}"
-        if horaire not in check_horaires:
-            horaires.append({
-                'time': horaire,
-                'cours': []
-            })
-            check_horaires.append(horaire)
-    horaires_tries = sorted(horaires, key=lambda x: datetime.datetime.strptime(x['time'].split(' - ')[0], '%H:%M'))
-    for i in range(len(horaires_tries)):
-        indices_horaires[horaires_tries[i]['time']] = {
-            'indice': i
-        }
-    for jour in jours:
-        for event in cal['events']:
-            if jour.day == event.begin.date().day:
-                horaire = f"{event.begin.strftime('%H:%M')} - {event.end.strftime('%H:%M')}"
-                for i in range(jour.weekday() - len(horaires_tries[indices_horaires[horaire]['indice']]['cours'])):
-                    horaires_tries[indices_horaires[horaire]['indice']]['cours'].append('-')
-                description = [item for item in event.description.split("\n") if item]
-                if with_groupe:
-                    groupe = description[0]
-                    prof = description[1]
-                    try:
-                        int(groupe)
-                        groupe = description[1]
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{groupe}<br>{event.location}')
-                    except ValueError:
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{groupe}<br>{prof}<br>{event.location}')
-                else:
-                    try:
-                        int(description[0])
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{event.location}')
-                    except ValueError:
-                        prof = description[1]
-                        horaires_tries[indices_horaires[horaire]['indice']]['cours'].append(f'{event.name}<br>{prof}<br>{event.location}')
-
-    for horaire in horaires_tries:
-        while len(horaire['cours']) < 5:
-            horaire['cours'].append('-')
-
+        debut_datetime = event.begin.datetime
+        description = [item for item in event.description.split("\n") if item]
+        if with_groupe:
+            groupe = description[0]
+            prof = description[1]
+            try:
+                int(groupe)
+                groupe = description[1]
+                nom = f'{event.name}<br>{groupe}<br>{event.location}'
+            except ValueError:
+                nom = f'{event.name}<br>{groupe}<br>{prof}<br>{event.location}'
+        else:
+            try:
+                int(description[0])
+                nom = f'{event.name}<br>{event.location}'
+            except ValueError:
+                prof = description[1]
+                nom = f'{event.name}<br>{prof}<br>{event.location}'
+        liste_cours.append({
+            'nom' : nom,
+            'style' : f"grid-column: {event.begin.date().weekday() + 2}; {_calcule_grid_row(debut_datetime.hour, debut_datetime.minute, event.duration.seconds // 60 // 60)}",
+        })
     return {
-        'jours': jours,
         'premier_jour': premier_jour,
         'dernier_jour': dernier_jour,
-        'horaires_tries': horaires_tries,
         'cal' : cal,
-        'erreur': None
+        'cours' : liste_cours,
+        'erreur': None,
     }
+
+def _calcule_grid_row(heure_debut:int, minute_debut:int, duree:int):
+    debut_grid = (heure_debut - 8) * 2 + 1
+    if minute_debut == 30:
+        debut_grid += 1
+    return f"grid-row: {debut_grid} / span {duree * 2};"
+
+

@@ -5,4 +5,4 @@ datetime
 python-dotenv
 audioop-lts
 Jinja2
-imgkit
+html2image
