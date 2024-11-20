@@ -1,7 +1,10 @@
 import discord
 from discord.ext import commands
-import commandes.salle as salle
-import commandes.groupe as groupe
+import commandes.edt_salle as edt_salle
+import commandes.edt_groupe as edt_groupe
+# import commandes.rappel as rappel
+import commandes.ajout_groupe as ajout_groupe
+import commandes.liste_groupes as groupes
 import logging
 logger = logging.getLogger(__name__)
 class EdtIUTBot(commands.Bot):
@@ -10,8 +13,12 @@ class EdtIUTBot(commands.Bot):
         self.commandes = None
     async def setup_hook(self) -> None:
         try:
-            salle.get(self)
-            groupe.get(self)
+            self.tree.clear_commands(guild=None)
+            edt_salle.get(self)
+            edt_groupe.get(self)
+            # rappel.get(self)
+            ajout_groupe.get(self)
+            groupes.get(self)
             self.commandes = await self.tree.sync()
         except Exception as e:
             print(e)

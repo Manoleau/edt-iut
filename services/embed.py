@@ -70,3 +70,12 @@ def obtenir_erreur(message:str, thumbnail:str):
         color=discord.Color.red(),
         timestamp=datetime.datetime.now(),
     )
+
+def obtenir_succes(message:str, thumbnail:str):
+    return obtenir_embed(
+        title="Succés",
+        description=message,
+        thumbnail=thumbnail,
+        color=discord.Color.green(),
+        timestamp=datetime.datetime.now(),
+    )
