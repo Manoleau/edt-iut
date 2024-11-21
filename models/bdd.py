@@ -41,6 +41,7 @@ class BDD:
         :return: Le curseur de la requête.
         """
         try:
+
             cursor = self.connection.cursor()
             if params:
                 cursor.execute(query, params)
@@ -49,41 +50,44 @@ class BDD:
             self.connection.commit()
             if close_cursor:
                 cursor.close()
+
+                return True
             return cursor
         except sqlite3.Error as e:
             print(f'{e}')
             cursor.close()
-            return None
+
+            return False
     def _insert_many(self, table:str, attributs:list[str], params:list[tuple]) -> bool:
         try:
-            self.connect()
+
             cursor = self.connection.cursor()
             str_attributs = ','.join(attributs)
             str_attributs_values = ','.join(['?' for i in range(len(attributs))])
             query = f"INSERT INTO {table} ({str_attributs}) VALUES ({str_attributs_values})"
             cursor.executemany(query, params)
             self.connection.commit()
-            self.disconnect()
+
             return True
         except sqlite3.Error as e:
             print(f'{e}')
-            self.disconnect()
+
             return False
 
     def _insert_one(self, table:str, attributs:list[str], params:tuple) -> bool:
         try:
-            self.connect()
+
             cursor = self.connection.cursor()
             str_attributs = ','.join(attributs)
             str_attributs_values = ','.join(['?' for i in range(len(attributs))])
             query = f"INSERT INTO {table} ({str_attributs}) VALUES ({str_attributs_values})"
             cursor.execute(query, params)
             self.connection.commit()
-            self.disconnect()
+
             return True
         except sqlite3.Error as e:
             print(f'{e}')
-            self.disconnect()
+
             return False
 
     def _fetch_all(self, query, params=None):
@@ -114,6 +118,24 @@ class BDD:
             return result
         return None
 
+    def _delete(self, table, attributs:list[str], params:tuple):
+        try:
+            query = f"DELETE FROM {table}"
+            if len(attributs) == 0:
+                return self._execute_query(query)
+            condition = f"WHERE "
+            for i in range(len(attributs)):
+                attribut = attributs[i]
+                if i == len(attributs) - 1:
+                    condition += f"{attribut} = ?;"
+                else:
+                    condition += f"{attribut} = ? AND "
+            query += f" {condition}"
+            return self._execute_query(query, params)
+        except sqlite3.Error as e:
+            print(f'{e}')
+
+            return False
     def obtenir_groupe_avec_nom(self, nom:str) -> Groupe | None:
         self.connect()
         res = self._fetch_one("SELECT * FROM groupe WHERE nom = ?;", (nom,))

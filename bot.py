@@ -4,6 +4,7 @@ import commandes.edt_salle as edt_salle
 import commandes.edt_groupe as edt_groupe
 # import commandes.rappel as rappel
 import commandes.ajout_groupe as ajout_groupe
+import commandes.supprimer_groupe as supprimer_groupe
 import commandes.liste_groupes as groupes
 import logging
 logger = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ class EdtIUTBot(commands.Bot):
             edt_groupe.get(self)
             # rappel.get(self)
             ajout_groupe.get(self)
+            supprimer_groupe.get(self)
             groupes.get(self)
             self.commandes = await self.tree.sync()
         except Exception as e:

@@ -19,14 +19,17 @@ def get(bot):
 
             test = calendar_service.obtenir(id, jours[0], jours[4])
             if test['ics'] is not None:
+                bdd.connect()
                 if bdd._insert_one('groupe', ['id', 'nom'], (id, nom)):
+                    bdd.disconnect()
                     with open('data.json', "r", encoding="utf-8") as file:
                         data = json.load(file)
                     data["groupe"].append({'id' : id, 'nom' : nom})
-                    with open(data.json, "w", encoding="utf-8") as file:
+                    with open('data.json', "w", encoding="utf-8") as file:
                         json.dump(data, file, indent=4, ensure_ascii=False)
                     await interaction.followup.send(embed=embed_service.obtenir_succes(f"Le groupe {nom} a été ajouté avec succés.", bot.user.display_avatar.url))
                 else:
+                    bdd.disconnect()
                     await interaction.followup.send(embed=embed_service.obtenir_erreur(f"Impossible d'ajouter le groupe {nom} ({id}) car il existe déjà.", bot.user.display_avatar.url))
             else:
                 await interaction.followup.send(embed=embed_service.obtenir_erreur(f"Aucun emploi du temps existe sous l'id {id}.", bot.user.display_avatar.url))

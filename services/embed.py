@@ -1,7 +1,7 @@
 import datetime
 import discord
 
-from Button.Edt import ButtonsEdt
+from Button.edt import ButtonsEdt
 from models.groupe import Groupe
 from models.media import Media
 from models.salle import Salle
