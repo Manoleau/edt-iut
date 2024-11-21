@@ -1,0 +1,33 @@
+{
+  "salle": [
+    {"id": "9113", "nom": "S04", "type": "AUTRE"},
+    {"id": "126", "nom": "S18", "type": "RESEAU"},
+    {"id": "134", "nom": "S21", "type": "AUTRE"},
+    {"id": "132", "nom": "S23", "type": "RESEAU"},
+    {"id": "118", "nom": "S01", "type": "INFO"},
+    {"id": "119", "nom": "S03", "type": "INFO"},
+    {"id": "120", "nom": "S13", "type": "INFO"},
+    {"id": "121", "nom": "S14", "type": "INFO"},
+    {"id": "122", "nom": "S16", "type": "INFO"},
+    {"id": "123", "nom": "S17", "type": "INFO"},
+    {"id": "135", "nom": "S22", "type": "INFO"},
+    {"id": "136", "nom": "S24", "type": "INFO"},
+    {"id": "133", "nom": "S26", "type": "INFO"},
+    {"id": "9188", "nom": "S27", "type": "INFO"},
+    {"id": "344", "nom": "040", "type": "TD"},
+    {"id": "127", "nom": "S10", "type": "TD"},
+    {"id": "128", "nom": "S11", "type": "TD"},
+    {"id": "129", "nom": "S12", "type": "TD"},
+    {"id": "130", "nom": "S15", "type": "TD"},
+    {"id": "131", "nom": "S25", "type": "TD"}
+  ],
+  "groupe": [
+    {"id": "6161", "nom": "BUT3 RA1A"},
+    {"id": "6163", "nom": "BUT3 RA1B"},
+    {"id": "6165", "nom": "BUT3 RA2A"},
+    {"id": "6168", "nom": "BUT3 RA2B"},
+    {"id": "14059", "nom": "BUT3 RA3"},
+    {"id": "6048", "nom": "BUT3 AGED"},
+    {"id": "6136", "nom": "BUT3 DACS"}
+  ]
+}

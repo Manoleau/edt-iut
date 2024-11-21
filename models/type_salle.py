@@ -3,6 +3,6 @@ from enum import Enum
 
 class TypeSalle(Enum):
     AUTRE = "autre"
-    RESEAU = "réseau"
+    RESEAU = "reseau"
     INFO = "info"
     TD = "td"
