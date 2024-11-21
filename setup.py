@@ -24,6 +24,9 @@ print(f"Durée création tables : {fin-debut:.3f}s")
 
 
 debut = time.time()
+bdd._delete('salle')
+bdd._delete('groupe')
+
 with open(file_path, "r", encoding="utf-8") as file:
     data = json.load(file)
 

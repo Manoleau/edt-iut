@@ -121,7 +121,7 @@ class BDD:
             return result
         return None
 
-    def _delete(self, table, attributs:list[str], params:tuple):
+    def _delete(self, table, attributs:list[str] = [], params:tuple = None):
         try:
             query = f"DELETE FROM {table}"
             if len(attributs) == 0:
@@ -136,8 +136,6 @@ class BDD:
                     else:
                         condition += f"{attribut} = ? AND "
                 query += f" WHERE {condition}"
-
-            print(query, params)
             cursor = self._execute_query(query, params, close_cursor=False)
             if cursor:
                 return cursor.rowcount > 0
