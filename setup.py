@@ -3,7 +3,7 @@ from models.type_salle import TypeSalle
 import time
 import json
 
-file_path = "data.json"
+file_path = "default_data.json"
 
 debut = time.time()
 bdd = BDD()

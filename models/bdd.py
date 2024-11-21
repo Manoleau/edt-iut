@@ -1,5 +1,7 @@
 import os
 import sqlite3
+from typing import Any
+
 from dotenv import load_dotenv
 from models.groupe import Groupe
 from models.salle import Salle
@@ -33,7 +35,7 @@ class BDD:
             self.connection.close()
             print("Connexion à la base de données fermée.")
 
-    def _execute_query(self, query, params=None, close_cursor=True):
+    def _execute_query(self, query, params=None, close_cursor=True) -> Any | bool:
         """
         Exécute une requête SQL.
         :param query: La requête SQL à exécuter.
@@ -49,6 +51,7 @@ class BDD:
                 cursor.execute(query)
             self.connection.commit()
             if close_cursor:
+
                 cursor.close()
 
                 return True
@@ -122,19 +125,25 @@ class BDD:
         try:
             query = f"DELETE FROM {table}"
             if len(attributs) == 0:
-                return self._execute_query(query)
-            condition = f"WHERE "
-            for i in range(len(attributs)):
-                attribut = attributs[i]
-                if i == len(attributs) - 1:
-                    condition += f"{attribut} = ?;"
-                else:
-                    condition += f"{attribut} = ? AND "
-            query += f" {condition}"
-            return self._execute_query(query, params)
+                query += ";"
+                params = None
+            else:
+                condition = ""
+                for i in range(len(attributs)):
+                    attribut = attributs[i]
+                    if i == len(attributs) - 1:
+                        condition += f"{attribut} = ?;"
+                    else:
+                        condition += f"{attribut} = ? AND "
+                query += f" WHERE {condition}"
+
+            print(query, params)
+            cursor = self._execute_query(query, params, close_cursor=False)
+            if cursor:
+                return cursor.rowcount > 0
+            return cursor
         except sqlite3.Error as e:
             print(f'{e}')
-
             return False
     def obtenir_groupe_avec_nom(self, nom:str) -> Groupe | None:
         self.connect()
