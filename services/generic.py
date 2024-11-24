@@ -118,9 +118,15 @@ def obtenir_setup(entity: Salle | Groupe, with_groupe:bool = False, jour_semaine
     }
 
 def _calcule_grid_row(heure_debut:int, minute_debut:int, duree:int):
+    if heure_debut < 8:
+        heure_debut = 8
+    if heure_debut + duree > 18:
+        heure_debut = 18 - duree
     debut_grid = (heure_debut - 8) * 2 + 1
     if minute_debut == 30:
         debut_grid += 1
+    # print(f"{debut_grid} : {heure_debut} , {minute_debut}")
+
     return f"grid-row: {debut_grid} / span {duree * 2};"
 
 import re
